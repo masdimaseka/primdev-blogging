@@ -9,6 +9,7 @@ import CreateBlog from '@/views/pages/author/createBlog.vue'
 import UpdateBlog from '@/views/pages/author/updateBlog.vue'
 import Login from '@/views/pages/auth/login.vue'
 import Register from '@/views/pages/auth/register.vue'
+import Detail from '@/views/pages/detail.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   {
@@ -25,6 +26,12 @@ const routes = [
         path: '/about',
         name: 'about',
         component: About
+      },
+      {
+        path: '/blog/:slug',
+        name: 'blog-detail',
+        component: Detail,
+        props: true
       }
     ]
   },
@@ -32,6 +39,9 @@ const routes = [
     path: '/dashboard',
     name: 'dashboard',
     component: AuthorTemplates,
+    meta: {
+      isAuth: true
+    },
     children: [
       {
         path: '/dashboard',
@@ -59,6 +69,9 @@ const routes = [
     path: '/login',
     name: 'auth-login',
     component: AuthTemplates,
+    meta: {
+      isAuth: false
+    },
     children: [
       {
         path: '/login',
@@ -77,6 +90,16 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => record.meta.isAuth)) {
+    let user = localStorage.getItem('token')
+    if (!user) {
+      next('/login')
+    }
+  }
+  next()
 })
 
 export default router

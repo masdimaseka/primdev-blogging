@@ -1,24 +1,38 @@
 <script setup>
 import Card from '@/components/card.vue'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import axios from 'axios'
 
-const datas = ref([
-  { title: 'judul 1', content: 'konten 1' },
-  { title: 'judul 2', content: 'konten 2' },
-  { title: 'judul 3', content: 'konten 3' },
-  { title: 'judul 4', content: 'konten 4' }
-])
+const blogLists = ref([])
+
+const isLoading = ref(false)
+
+const getData = async () => {
+  isLoading.value = true
+  try {
+    const response = await axios.get('https://primdev.alwaysdata.net/api/blog')
+    if (response.status == 200) {
+      blogLists.value = response.data
+    }
+  } catch (error) {
+    console.log(error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(() => {
+  getData()
+})
 </script>
 
 <template>
   <div>
     <div class="grid grid-cols-4 gap-4 p-10">
-      <Card
-        v-for="(data, index) in datas"
-        :key="index"
-        :title="data.title"
-        :content="data.content"
-      />
+      <router-link v-for="(data, index) in blogLists" :to="/blog/ + data.slug" :key="index">
+        <Card :title="data.title" :content="data.content" />
+      </router-link>
+      <span v-if="isLoading">Loading...</span>
     </div>
   </div>
 </template>

@@ -5,6 +5,11 @@ const routeItem = ref([
   { name: 'Dashboard', route: '/dashboard' },
   { name: 'blog', route: '/blog' }
 ])
+
+const logout = () => {
+  localStorage.removeItem('token')
+  location.reload()
+}
 </script>
 
 <template>
@@ -14,6 +19,7 @@ const routeItem = ref([
       <div v-for="(item, index) in routeItem" :key="index">
         <router-link :to="item.route">{{ item.name }}</router-link>
       </div>
+      <button class="bg-red-400 text-white py-[8px] rounded mt-16" @click="logout">Logout</button>
     </div>
   </div>
 </template>
