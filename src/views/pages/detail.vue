@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import axios from 'axios'
 import { useRoute } from 'vue-router'
+import { baseUrl } from '@/helper/GlobalVariable'
 
 const slug = useRoute().params.slug
 const blogDetail = ref(null)
@@ -11,7 +12,7 @@ const isLoading = ref(false)
 const getDataDetail = async () => {
   isLoading.value = true
   try {
-    const response = await axios.get('https://primdev.alwaysdata.net/api/blog/' + slug)
+    const response = await axios.get(baseUrl + '/blog/' + slug)
     if (response.status == 200) {
       blogDetail.value = response.data
     }

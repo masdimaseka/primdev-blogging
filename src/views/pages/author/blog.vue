@@ -1,13 +1,34 @@
 <script setup>
+import { ref, onMounted } from 'vue'
 import Card from '@/components/card.vue'
-import { ref } from 'vue'
+import getAuthor from '@/helper/getAuthor'
+import axios from 'axios'
+import { baseUrl, token } from '@/helper/GlobalVariable'
 
-const datas = ref([
-  { title: 'Judul 1', content: 'konten 1' },
-  { title: 'Judul 2', content: 'konten 2' },
-  { title: 'Judul 3', content: 'konten 3' },
-  { title: 'Judul 4', content: 'konten 4' }
-])
+const blogLists = ref([])
+
+const isLoading = ref(false)
+
+const getData = async () => {
+  isLoading.value = true
+  try {
+    const author = await getAuthor()
+    const response = await axios.get(baseUrl + '/blog/author/' + author.id, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    if (response.status == 200) {
+      blogLists.value = response.data
+    }
+  } catch (error) {
+    console.log(error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(() => {
+  getData()
+})
 </script>
 
 <template>
@@ -18,10 +39,11 @@ const datas = ref([
     </div>
     <div class="grid grid-cols-4 gap-4">
       <Card
-        v-for="(item, index) in datas"
+        v-for="(item, index) in blogLists"
         :key="index"
         :title="item.title"
         :content="item.content"
+        :blog_id="item.id"
       />
     </div>
   </div>
