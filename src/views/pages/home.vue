@@ -31,7 +31,7 @@ onMounted(() => {
   <div>
     <div class="grid grid-cols-4 gap-4 p-10">
       <router-link v-for="(data, index) in blogLists" :to="/blog/ + data.slug" :key="index">
-        <Card :title="data.title" :content="data.content" :blog_id="data.id" />
+        <Card :title="data.title" :content="data.content" :blog_id="data.id" :slug="data.slug" />
       </router-link>
       <span v-if="isLoading">Loading...</span>
     </div>

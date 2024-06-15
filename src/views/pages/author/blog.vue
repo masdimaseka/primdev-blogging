@@ -44,6 +44,7 @@ onMounted(() => {
         :title="item.title"
         :content="item.content"
         :blog_id="item.id"
+        :slug="item.slug"
       />
     </div>
   </div>

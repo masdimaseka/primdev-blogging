@@ -59,7 +59,7 @@ const routes = [
         component: CreateBlog
       },
       {
-        path: '/blog/update',
+        path: '/blog/update/:slug',
         name: 'author-update-blog',
         component: UpdateBlog
       }

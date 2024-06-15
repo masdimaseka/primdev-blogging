@@ -8,11 +8,13 @@ import { baseUrl, token } from '@/helper/GlobalVariable'
 
 const input = reactive({
   title: '',
-  content: ''
+  content: '',
+  image: null
 })
 
 const isLoading = ref(false)
 const router = useRouter()
+const previewImage = ref(null)
 
 const createBlog = async () => {
   isLoading.value = true
@@ -20,7 +22,7 @@ const createBlog = async () => {
     const formData = new FormData()
     formData.append('title', input.title)
     formData.append('content', input.content)
-    formData.append('image', document.getElementById('image').files[0])
+    formData.append('image', input.image)
     const response = await axios.post(baseUrl + '/blog/store', formData, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -35,6 +37,17 @@ const createBlog = async () => {
     console.log(error)
   } finally {
     isLoading.value = false
+  }
+}
+
+const handleImageChange = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    previewImage.value = URL.createObjectURL(file)
+    input.image = file
+  } else {
+    previewImage.value = null
+    input.image = null
   }
 }
 </script>
@@ -57,7 +70,10 @@ const createBlog = async () => {
         inputTitle="blog content"
         inputName="blogContent"
       />
-      <input type="file" name="image" id="image" />
+      <input type="file" name="image" id="image" @change="handleImageChange" />
+      <div v-if="previewImage">
+        <img :src="previewImage" alt="" class="w-25 h-25 object-cover" />
+      </div>
       <button class="btn - btn-primary w-fit bg-blue-500" type="submit">
         <div role="status" v-if="isLoading">
           <svg
